@@ -437,43 +437,73 @@ local function grok_number(self, text, start, etc)
 end
 
 
+local stream_mt = {}
+stream_mt.__index = stream_mt
+local function _new_stream()
+   local raw = {
+      count = 0,
+      buffer = {},
+   }
+   return setmetatable(raw, stream_mt)
+end
+ 
+function stream_mt:clear()
+   self.count = 0
+end
+ 
+function stream_mt:insert(c)
+   local idx = self.count + 1
+   self.buffer[idx] = c
+   self.count = idx
+end
+ 
+function stream_mt:len()
+   return self.count
+end
+ 
+function stream_mt:dump()
+   return table.concat(self.buffer, "", 1, self.count)
+end
+ 
+ 
+local tmp_stream = _new_stream()
 local function grok_string(self, text, start, etc)
-
    if text:sub(start,start) ~= '"' then
       self:onDecodeError("expected string's opening quote", text, start, etc)
    end
-
+ 
+   tmp_stream:clear()
    local i = start + 1 -- +1 to bypass the initial quote
    local text_len = text:len()
    local VALUE = ""
    while i <= text_len do
       local c = text:sub(i,i)
       if c == '"' then
-         return VALUE, i + 1
+         return tmp_stream:dump(), i + 1
       end
       if c ~= '\\' then
-         VALUE = VALUE .. c
+         tmp_stream:insert(c)
          i = i + 1
       elseif text:match('^\\b', i) then
-         VALUE = VALUE .. "\b"
+         tmp_stream:insert("\b")
          i = i + 2
       elseif text:match('^\\f', i) then
-         VALUE = VALUE .. "\f"
+         tmp_stream:insert("\f")
          i = i + 2
       elseif text:match('^\\n', i) then
-         VALUE = VALUE .. "\n"
+         tmp_stream:insert("\n")
          i = i + 2
       elseif text:match('^\\r', i) then
-         VALUE = VALUE .. "\r"
+         tmp_stream:insert("\r")
          i = i + 2
       elseif text:match('^\\t', i) then
-         VALUE = VALUE .. "\t"
+         tmp_stream:insert("\t")
          i = i + 2
       else
          local hex = text:match('^\\u([0123456789aAbBcCdDeEfF][0123456789aAbBcCdDeEfF][0123456789aAbBcCdDeEfF][0123456789aAbBcCdDeEfF])', i)
          if hex then
             i = i + 6 -- bypass what we just read
-
+ 
             -- We have a Unicode codepoint. It could be standalone, or if in the proper range and
             -- followed by another in a specific range, it'll be a two-code surrogate pair.
             local codepoint = tonumber(hex, 16)
@@ -487,17 +517,17 @@ local function grok_string(self, text, start, etc)
                   -- not a proper low, so we'll just leave the first codepoint as is and spit it out.
                end
             end
-            VALUE = VALUE .. unicode_codepoint_as_utf8(codepoint)
-
+            tmp_stream:insert(unicode_codepoint_as_utf8(codepoint))
+ 
          else
-
+ 
             -- just pass through what's escaped
-            VALUE = VALUE .. text:match('^\\(.)', i)
+            tmp_stream:insert(text:match('^\\(.)', i))
             i = i + 2
          end
       end
    end
-
+ 
    self:onDecodeError("unclosed string", text, start, etc)
 end
 
