@@ -1,13 +1,13 @@
 
 package = "json-lua"
-version = "0.1-2"
+version = "0.1-3"
 source = {
   url = "git://github.com/jiyinyiyong/json-lua"
 }
 description = {
   summary = "JSON encoder/decoder",
   detailed = [[
-    JSON.lua
+    Forked from JSON.lua
   ]],
   homepage = "https://github.com/jiyinyiyong/json-lua",
   license = "CC"

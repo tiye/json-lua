@@ -31,6 +31,16 @@ print(inspect(raw_json_text))
 print(inspect(pretty_json_text))
 ```
 
+Output:
+
+```kua
+{ 1, 2, { 3, 4 } }
+"[1,2,[3,4]]"
+"[ 1, 2, [ 3, 4 ] ]"
+```
+
+Notice that `encode_pretty` is not indented style. And it's a bug need to be fixed.
+
 ### Test
 
 ```
