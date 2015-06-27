@@ -2,9 +2,9 @@
 JSON.lua
 ----
 
-This repo is a mirror of: http://regex.info/blog/lua/json
+This project was originally created by Jeffrey Friedl: http://regex.info/blog/lua/json
 
-Just make it installable from LuaRocks.
+This repo is forked for LuaRocks.
 
 ### Usage
 
@@ -29,6 +29,12 @@ local pretty_json_text = JSON:encode_pretty(lua_value) -- "pretty printed" versi
 print(inspect(lua_value))
 print(inspect(raw_json_text))
 print(inspect(pretty_json_text))
+```
+
+### Test
+
+```
+lua test.lua
 ```
 
 ### License
