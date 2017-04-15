@@ -200,6 +200,7 @@ local OBJDEF = {
 --           pretty         = true,
 --           indent         = "   ",
 --           align_keys     = false,
+--           array_newline  = false,
 --  
 --           -- other output-related options
 --           null           = "\0",   -- see "ENCODING JSON NULL VALUES" below
@@ -215,6 +216,7 @@ local OBJDEF = {
 --           pretty         = false
 --           null           = nil,
 --           stringsAreUtf8 = false,
+--           array_newline  = false,
 --
 --
 --
@@ -1309,12 +1311,21 @@ function encode_value(self, value, parents, etc, options, indent, for_key)
          -- An array...
          --
          local ITEMS = { }
+         local key_indent = indent .. tostring(options.indent or "")
          for i = 1, maximum_number_key do
-            table.insert(ITEMS, encode_value(self, T[i], parents, etc, options, indent))
+            if not options.array_newline then
+               table.insert(ITEMS, encode_value(self, T[i], parents, etc, options, indent))
+            else
+               table.insert(ITEMS, encode_value(self, T[i], parents, etc, options, key_indent))
+            end
          end
 
          if options.pretty then
-            result_value = "[ " .. table.concat(ITEMS, ", ") .. " ]"
+            if not options.array_newline then
+               result_value = "[ " .. table.concat(ITEMS, ", ") .. " ]"
+            else
+               result_value =  "[\n"  ..  key_indent .. table.concat(ITEMS, ",\n" .. key_indent) .. "\n" ..  indent .. "]"
+            end
          else
             result_value = "["  .. table.concat(ITEMS, ",")  .. "]"
          end
