@@ -41,6 +41,28 @@ Output:
 
 Notice that `encode_pretty` is not indented style. And it's a bug need to be fixed.
 
+### array_newline option
+
+```lua
+local pretty_json_text = JSON:encode_pretty(lua_value, nil, 
+           { pretty = true, align_keys = false, array_newline = true, indent = "|   " })
+print(pretty_json_text)
+```
+
+Output:
+
+```kua
+[
+|   1,
+|   2,
+|   [
+|   |   3,
+|   |   4
+|   ]
+]
+```
+ 
+
 ### Test
 
 ```
