@@ -2,7 +2,7 @@
 package = "json-lua"
 version = "0.1-3"
 source = {
-  url = "git://github.com/jiyinyiyong/json-lua"
+  url = "git://github.com/jiyinyiyong/json-lua.git"
 }
 description = {
   summary = "JSON encoder/decoder",
@@ -16,7 +16,7 @@ dependencies = {
   "lua >= 5.1"
 }
 build = {
-  type = "module",
+  type = "builtin",
   modules = {
     JSON = "JSON.lua"
   }
