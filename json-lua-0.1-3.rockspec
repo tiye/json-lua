@@ -16,7 +16,7 @@ dependencies = {
   "lua >= 5.1"
 }
 build = {
-  type = "module",
+  type = "builtin",
   modules = {
     JSON = "JSON.lua"
   }
