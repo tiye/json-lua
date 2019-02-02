@@ -2,7 +2,7 @@
 package = "json-lua"
 version = "0.1-3"
 source = {
-  url = "git://github.com/jiyinyiyong/json-lua.git"
+  url = "https://github.com/jiyinyiyong/json-lua.git"
 }
 description = {
   summary = "JSON encoder/decoder",
